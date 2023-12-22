@@ -1,0 +1,59 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+int main(){
+    
+    char arr[3][3]={'1','2','3','4','5','6','7','8','9'};
+    int i,j,x=1;
+    char n;
+
+    while(x<10){
+
+    system("cls");
+    printf("* TIC TAC TOE *\n");
+    printf("  -----------\n\n");
+
+        for(i=0;i<3;i++){
+        for(j=0;j<3;j++){
+            printf(" %c | ",arr[i][j]);
+                        }
+            printf("\n\n");
+                        }
+
+          if(arr[0][0]==arr[0][1]&&arr[0][1]==arr[0][2]){printf("GAME OVER");
+        return 0;}
+        if(arr[1][0]==arr[1][1]&&arr[1][1]==arr[1][2]){printf("GAME OVER");
+        return 0;}
+        if(arr[2][0]==arr[2][1]&&arr[2][1]==arr[2][2]){printf("GAME OVER");
+        return 0;}
+           
+        if(arr[0][0]==arr[1][0]&&arr[1][0]==arr[2][0]){printf("GAME OVER");
+        return 0;}
+        if(arr[0][1]==arr[1][1]&&arr[1][1]==arr[2][1]){printf("GAME OVER");
+        return 0;}
+        if(arr[0][2]==arr[1][2]&&arr[1][2]==arr[2][2]){printf("GAME OVER");
+        return 0;}
+             
+        if(arr[0][0]==arr[1][1]&&arr[1][1]==arr[2][2]){printf("GAME OVER");
+        return 0;}
+        if(arr[0][2]==arr[1][1]&&arr[1][1]==arr[2][0]){printf("GAME OVER");
+          return 0;}
+
+    
+        if(x%2==0){printf("player O choice: ");}
+        else{printf("Player X choice: ");}
+
+        scanf(" %c",&n);
+     
+    for(i=0;i<3;i++){
+     for(j=0;j<3;j++){
+      if(x%2==0){
+       if(n==arr[i][j]){ 
+          arr[i][j]='O';}}
+      else{
+        if(n==arr[i][j]){ 
+          arr[i][j]='X';}}
+        }}           
+        x++;
+    }
+}
