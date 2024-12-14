@@ -1,0 +1,184 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <conio.h>
+#include <time.h>
+#include <unistd.h>
+
+
+struct queue
+{
+    int row;
+    int col;
+} pos[150];
+
+void intro(char arr[10][20]){
+    system("cls");
+    printf("\033[35m==============================================\033[0m\n");
+    for (int i = 0; i < 10; i++)
+    {
+        printf("\033[31m||\033[0m");
+        for (int j = 0; j < 20; j++)
+        {   
+            if(i==5&&j==1){
+            printf("\033[32;2;3m#use {w,s,a,d} or {8,2,4,6} keys to move\n");
+            printf("         #collect '*' foods to grow\n");
+            printf("            #avoid '~' poops\033[0m");j=12;}
+            else{printf("  ");}
+            
+        }
+        printf("\033[31m||\033[0m\n");
+    }
+    printf("\033[35m============================================\033[0m\n");
+    sleep(7);
+}
+
+void display(char arr[10][20],int count)
+{
+    system("cls");
+    int s=0;
+    printf("\033[35m================= \033[36mscore %d \033[35m================\033[0m\n",count*10);
+    for (int i = 0; i < 10; i++)
+    {
+        printf("\033[31m||\033[0m");
+        for (int j = 0; j < 20; j++)
+        {
+            if(arr[i][j]==' '){printf(" %c", arr[i][j]);}
+            else if(arr[i][j]=='0'){ 
+                if(s%2==0){
+                printf(" \033[33m%c\033[0m", arr[i][j]);}
+                else{
+                printf(" \033[32m%c\033[0m", arr[i][j]);
+                }s++;
+            }
+            else if(arr[i][j]=='*'){printf(" \033[33;1m%c\033[0m", arr[i][j]);}
+            else if(arr[i][j]=='~'){printf(" \033[32;m%c\033[0m", arr[i][j]);}
+            else if(arr[i][j]=='@'){printf(" \033[32;2;3m%c\033[0m", arr[i][j]);}
+        }
+        printf("\033[31m||\033[0m\n");
+    }
+    printf("\033[35m============================================\033[0m\n");
+}
+
+
+int main()
+{
+    int front = 1, rear = 0, size = 150, prev=front-1;
+    int x, y,i,count=1;
+    bool poop=false;
+
+    pos[rear].row = 0;
+    pos[rear].col = 0;
+
+    char read = 'o';
+    char arr[10][20];
+    srand(time(0));
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 20; j++)
+        {
+            arr[i][j] = ' ';
+        }
+    }
+    arr[1][5] = '*';
+    intro(arr);
+    
+    while (1)
+    {
+        display(arr,count);
+        read = getch();
+        
+        
+        
+        if (front==0){prev=size-1;}
+        else{prev=front-1;}
+
+        if (read == 'w'||read=='8')
+        {
+            pos[front].row = pos[prev].row - 1;
+            pos[front].col = pos[prev].col;
+        }
+        else if (read == 'a'||read=='4')
+        {
+            pos[front].row = pos[prev].row;
+            pos[front].col = pos[prev].col - 1;
+        }
+        else if (read == 'd'||read=='6')
+        {
+            pos[front].row = pos[prev].row;
+            pos[front].col = pos[prev].col + 1;
+        }
+        else if (read == 's'||read=='2')
+        {
+            pos[front].row = pos[prev].row + 1;
+            pos[front].col = pos[prev].col;
+        }
+        else
+        {
+            continue;
+        }
+
+        if (arr[pos[front].row][pos[front].col] == '0' ||pos[front].row>=10||pos[front].col>=20||pos[front].row<0||pos[front].col<0)
+        {
+            printf("\n           ==== \033[31mGAME OVER \033[0m====  \n", count * 10);
+            exit(0);
+        }
+        else if(arr[pos[front].row][pos[front].col] == '~'){
+            count-=2;
+            arr[pos[rear].row][pos[rear].col] = ' ';
+            arr[pos[rear+1].row][pos[rear+1].col] = ' ';
+            arr[pos[rear+2].row][pos[rear+2].col] = ' ';
+            rear+=3;
+        }
+        else if (arr[pos[front].row][pos[front].col] == '*')
+        {
+            x = rand() % 9;
+            y = rand() % 19;
+            
+            if(front-rear>0){
+                i=rear;
+            while(i<front) {
+                if(pos[i].row==x&&pos[i].col==y) {
+                    x = rand() % 9;
+                    y = rand() % 19;
+                    i=rear;
+                }
+                else {
+                    i++;
+                }
+            }
+            }
+            else{
+                i=0;
+                while(i<size) {
+                if(pos[i].row==x&&pos[i].col==y) {
+                    x = rand() % 9;
+                    y = rand() % 19;
+                    i=0;
+                }
+                else {
+                    i++;
+                    if(i==front){i=rear;}
+                }
+            }
+            }
+            arr[x][y] = '*';
+            count++;
+            if(count%4==0){poop=true;}
+        }
+        else
+        {   if(poop){arr[pos[rear].row][pos[rear].col] = '~';poop=false;}
+            else{arr[pos[rear].row][pos[rear].col] = ' ';}
+            rear++;
+            if(rear>=size){rear=0;} 
+        }
+
+
+        if(rear-1!=prev){ arr[pos[prev].row][pos[prev].col] = '0'; }
+        arr[pos[front].row][pos[front].col] = '@';
+        front++;
+        if(front>=size){front=0;}
+    }
+    return 0;
+}
